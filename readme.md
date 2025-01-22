@@ -64,13 +64,14 @@ cd bilira-case
 
 3. Create a `.env` file with your configuration like `.env.example`. Change only Binance credentials.
 
-```bash
-docker compose up --build
-```
-
 4. Edit `src/config.py` to customize trading parameters:
 - Trading pair
 - SMA periods
 - Order quantity
 - Database settings
 - Redis settings
+
+5. Run app
+```bash
+docker compose up --build
+```
