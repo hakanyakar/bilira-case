@@ -33,7 +33,7 @@ The bot includes comprehensive monitoring:
 - Trading signals and executions
 
 Services:
-- Trading Bot API: `http://localhost:8080`
+- Trading Bot Swagger API: `http://localhost:8080/docs`
 - Prometheus metrics: `http://localhost:8000`
 - PostgreSQL: `localhost:5432`
 - Redis: `localhost:6379`
