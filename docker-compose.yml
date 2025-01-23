@@ -58,10 +58,22 @@ services:
       - trading-network
     restart: always
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - trading-network
+    restart: always
+
 networks:
   trading-network:
     driver: bridge
 
 volumes:
   postgres_data:
-  redis_data: 
+  redis_data:
+  

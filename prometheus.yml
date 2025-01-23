@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'trading-bot'
+    static_configs:
+      - targets: ['trading-bot:8000'] 
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['trading-postgres:9187']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['trading-redis:9121']

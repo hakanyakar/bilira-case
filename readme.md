@@ -39,9 +39,12 @@ Services:
 - Redis: `localhost:6379`
 
 Access monitoring endpoints:
+- Dashboard: `http://127.0.0.1:8080/`
+- Trading signals: `http://127.0.0.1:8080/signals`
+- Trading orders: `http://127.0.0.1:8080/orders`
 - Performance metrics: `http://localhost:8080/api/monitoring/performance`
 - Error metrics: `http://localhost:8080/api/monitoring/errors`
-- Prometheus metrics: `http://localhost:8000`
+- Prometheus graphical metrics: `http://localhost:9090`
 
 
 ## Testing
