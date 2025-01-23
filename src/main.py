@@ -1,9 +1,14 @@
 import asyncio
 import logging
 import uvicorn
-from fastapi import FastAPI
+import os
+import signal
+
+from fastapi import FastAPI, Request
 from datetime import datetime
 from prometheus_client import start_http_server
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 from exchange import BinanceExchange
 from database import Database
@@ -17,8 +22,85 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+template_dir = os.path.join(BASE_DIR, "templates")
 
 operations = ["process_price", "sma_calculation", "generate_signal", "create_market_order"]
+
+db = Database()
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "title": "Trading Dashboard",
+        }
+    )
+
+
+@app.get("/signals", response_class=HTMLResponse)
+async def signals(request: Request):
+
+    signals = await db.select(_columns='*', _from="signals")
+    formatted_signals = []
+
+    if signals:
+        for signal in signals:
+
+            formatted_signal = {
+                "symbol": str(signal["symbol"]),
+                "signal_type": str(signal["signal_type"]).upper(),
+                "price": float(signal["price"]) if signal["price"] is not None else 0.0,
+                "short_sma": float(signal["short_sma"]) if signal["short_sma"] is not None else 0.0,
+                "long_sma": float(signal["long_sma"]) if signal["long_sma"] is not None else 0.0,
+                "created_at": signal["created_at"] if isinstance(signal["created_at"], datetime) else datetime.now(),
+            }
+            formatted_signals.append(formatted_signal)
+
+    
+    return templates.TemplateResponse(
+        "signals.html",
+        {
+            "request": request,
+            "title": "Trading Dashboard",
+            "signals": formatted_signals
+        }
+    )
+
+
+@app.get("/orders", response_class=HTMLResponse)
+async def orders(request: Request):
+
+    orders = await db.select(_columns='*', _from="orders")
+    formatted_orders = []
+
+    if orders:
+        for order in orders:
+            formatted_order = {
+                "order_id": str(order["order_id"]),
+                "symbol": str(order["symbol"]),
+                "side": str(order["side"]).upper(),
+                "quantity": float(order["quantity"]) if order["quantity"] is not None else 0.0,
+                "price": float(order["price"]) if order["price"] is not None else 0.0,
+                "status": str(order["status"]).upper(),
+                "created_at": order["created_at"] if isinstance(order["created_at"], datetime) else datetime.now(),
+                "updated_at": order["updated_at"] if isinstance(order["updated_at"], datetime) else datetime.now(),
+            }
+
+            formatted_orders.append(formatted_order)
+
+    return templates.TemplateResponse(
+        "orders.html",
+        {
+            "request": request,
+            "title": "Trading Dashboard",
+            "orders": formatted_orders
+        }
+    )
 
 
 @app.get("/api/monitoring/performance")
@@ -124,5 +206,3 @@ class TradingApp:
 
 if __name__ == "__main__":
     asyncio.run(TradingApp().main()) 
-
-    

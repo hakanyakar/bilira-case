@@ -13,8 +13,8 @@ class Config:
     USE_TESTNET = True
     
     # Strategy settings
-    SHORT_TERM_PERIOD = 10
-    LONG_TERM_PERIOD = 50
+    SHORT_TERM_PERIOD = 5
+    LONG_TERM_PERIOD = 20
     ORDER_QUANTITY = 0.001
     STRATEGY_TIME_INTERVAL = 30
 

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Trading Orders</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Symbol</th>
+                        <th>Side</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>
+                            <span class="text-monospace">#{{ order.order_id }}</span>
+                        </td>
+                        <td>
+                            <span class="fw-bold">{{ order.symbol }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if order.side == 'BUY' else 'danger' }}">
+                                {{ order.side }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-monospace">{{ '%0.4f' | format(order.quantity) }}</span>
+                        </td>
+                        <td>
+                            <span class="text-monospace">${{ '%0.2f' | format(order.price) }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if order.status == 'FILLED' else 'warning' if order.status == 'PENDING' else 'secondary' }}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-muted">{{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>No orders found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Total Orders</h6>
+                <h3>{{ orders|length }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Buy Orders</h6>
+                <h3 class="text-success">
+                    {{ orders|selectattr("side", "equalto", "BUY")|list|length }}
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Sell Orders</h6>
+                <h3 class="text-danger">
+                    {{ orders|selectattr("side", "equalto", "SELL")|list|length }}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

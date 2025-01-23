@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Trading Signals</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if signals %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Signal Type</th>
+                        <th>Price</th>
+                        <th>Short SMA</th>
+                        <th>Long SMA</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for signal in signals %}
+                    <tr>
+                        <td>
+                            <span class="fw-bold">{{ signal.symbol }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if signal.signal_type == 'BUY' else 'danger' }}">
+                                {{ signal.signal_type }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-monospace">${{ '%0.2f' | format(signal.price) }}</span>
+                        </td>
+                        <td>
+                            <span class="text-monospace">${{ '%0.2f' | format(signal.short_sma) }}</span>
+                        </td>
+                        <td>
+                            <span class="text-monospace">${{ '%0.2f' | format(signal.long_sma) }}</span>
+                        </td>
+                        <td>
+                            <span class="text-muted">{{ signal.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>No signals found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add some stats cards at the bottom -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Total Signals</h6>
+                <h3>{{ signals|length }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Buy Signals</h6>
+                <h3 class="text-success">
+                    {{ signals|selectattr("signal_type", "equalto", "BUY")|list|length }}
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Sell Signals</h6>
+                <h3 class="text-danger">
+                    {{ signals|selectattr("signal_type", "equalto", "SELL")|list|length }}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add custom styles -->
+<style>
+    .text-monospace {
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+    .progress {
+        background-color: #f8f9fa;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .btn-group {
+        box-shadow: none !important;
+    }
+</style>
+{% endblock %} 

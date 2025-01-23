@@ -42,9 +42,8 @@ class SMAStrategy:
         """
         Signal generation for sma crossover
         """
-        last_signal = await self.database.select("*", "signals", "LIMIT 1")
-        current_price = await self.database.select("price", "prices", "LIMIT 1")
-
+        last_signal = await self.database.select("*", "signals", "LIMIT 1", return_single=True)
+        current_price = await self.database.select("price", "prices", "LIMIT 1", return_single=True)
         short_sma = await self.calculate_sma(self.short_period)
         long_sma = await self.calculate_sma(self.long_period)
 

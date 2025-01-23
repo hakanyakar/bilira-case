@@ -1,6 +1,6 @@
-fastapi==0.68.1
+fastapi==0.68.0
 uvicorn==0.15.0
-psycopg2-binary==2.9.3
+psycopg2==2.9.10
 redis==4.3.4
 python-binance==1.0.16
 prometheus-client==0.14.1
@@ -13,3 +13,4 @@ numpy==1.21.0
 aiohttp==3.8.1
 asyncio==3.4.3
 psutil==5.9.5
+jinja2==3.0.3

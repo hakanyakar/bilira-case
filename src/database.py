@@ -56,16 +56,17 @@ class Database:
             """)
         self.conn.commit()
 
-    async def select(self, _columns = "*", _from = "", _limit = ""):
+    async def select(self, _columns = "*", _from = "", _limit = "", return_single=False):
 
         with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(f"SELECT {_columns} FROM {_from} ORDER BY id DESC {_limit}")
             result = cur.fetchall()
-        
-            if len(result) == 1:
-                return result[0]
-            elif len(result) > 1:
-                return result
+
+            if len(result) > 0:
+                if return_single:
+                    return result[0]
+                else:
+                    return result
             else:
                 return None
             
